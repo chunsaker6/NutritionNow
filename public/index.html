@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <title>Nutrition Now</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    </head>
+    <body>
+        <div id= "app">
+            <!--this is Vue app-->
+            <div id="wrapper">
+                <h1 id="nutritionNow">Nutrition <span id="now">Now</span></h1>
+                <hr id="nutritionHR">
+                <h1 class="welcome" v-if="showPage == 'A'">Welcome </h1>
+                <h1 class="welcome" v-else-if="showPage =='B'">Add or Change your Meals</h1>
+                <h1 class="welcome" v-else-if="showPage === 'C'">Add or Change your Goals</h1>
+                <h1 class="welcome" v-else-if="showPage === 'D'">Members Login</h1>
+                <h1 class="welcome" v-else-if="showPage === 'F'">Sign Up</h1>
+
+                <hr id="welcomeHR">
+                <span class="color"></span>
+                <div class="nav" v-if="logPage === 'A'">
+                    <nav>
+                        <ul>
+                            <li><button class="navButtons" @click="showPage = 'A'; logPage = 'A'; loadFoods()">Dashboard</button></li>
+                            <li><button class="navButtons" @click="showPage = 'B'; logPage = 'A'; loadFoods()">Your Meals</button></li>
+                            <li><button class="navButtons" @click="showPage = 'C'; logPage = 'A'; loadGoals()">Your Goals</button></li>
+                            <li><button class="navButtons" @click="deleteSession">Log Out</button></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div id="wrapperDash" v-if="showPage === 'A'">
+                <div id="calorieGraph">
+                    <div class="graphContainer">
+                        <h1>Calories</h1>
+                        <canvas id="myChart"  width="500" height="400"></canvas>
+                    </div>
+                </div>
+                <div id="protienGraph">
+                    <div class="graphContainer">
+                        <h1>Protein</h1>
+                        <canvas id="mySecondChart"  width="500" height="400"></canvas>
+                    </div>
+                </div>
+                <div id="fatsGraph">
+                    <div class="graphContainer">
+                        <h1>Fats</h1>
+                        <canvas id="myThirdChart"  width="500" height="400"></canvas>
+                    </div>
+                </div>
+                <div id="meals">
+                    <h1>Your Meals</h1>
+                    <div class="container">
+                        <h2>Breakfast</h2>
+                        <button class="mealSelect" @click="select = !select" v-show="!select">Select Meal</button>
+                        <button class="mealSelect" @click="showPage = 'B'" v-show="!select">Edit</button>
+                        <ul v-show="select" v-if="showAllItems">
+                            <li class="containerSelect" v-for="(food, index) in foods" :key="index">
+                                <strong>{{food.name}}</strong>
+                                <br>
+                                Calories: {{food.calories}}
+                                <br>
+                                Protein: {{food.protien}}
+                                <br>
+                                Fats: {{food.fats}}
+                                <br>
+                                <button class="mealSelect" @click="selectedItemIndex = index; showAllItems = !showAllItems; addCalories(); addProtien(); addFats()">Confirm</button>       
+                            </li>
+                        </ul>
+                        <div v-else-if="!showAllItems">
+                            <p>
+                                <br>
+                                <strong>{{foods[selectedItemIndex].name}}</strong>
+                                <br>
+                                <br>
+                                Calories: {{foods[selectedItemIndex].calories}}
+                                <br>
+                                Protein: {{foods[selectedItemIndex].protien}}
+                                <br>
+                                Fats: {{foods[selectedItemIndex].fats}}
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <h2>Lunch</h2>
+                        <button class="mealSelect" @click="secondSelect = !secondSelect" v-show="!secondSelect">Select Meal</button>
+                        <button class="mealSelect" @click="showPage = 'B'" v-show="!secondSelect">Edit</button>
+                        <ul v-show="secondSelect" v-if="secondShowAllItems">
+                            <li class="containerSelect" v-for="(food, index) in foods" :key="index">
+                                <strong>{{food.name}}</strong>
+                                <br>
+                                Calories: {{food.calories}}
+                                <br>
+                                Protein: {{food.protien}}
+                                <br>
+                                Fats: {{food.fats}}
+                                <br>
+                                <button class="mealSelect" @click="secondSelectedItemIndex = index; secondShowAllItems = !secondShowAllItems; addCalories(); addProtien(); addFats()">Confirm</button>       
+                            </li>
+                        </ul>
+                        <div v-else-if="!secondShowAllItems">
+                            <p>
+                                <br>
+                                <strong>{{foods[secondSelectedItemIndex].name}}</strong>
+                                <br>
+                                <br>
+                                Calories: {{foods[secondSelectedItemIndex].calories}}
+                                <br>
+                                Protein: {{foods[secondSelectedItemIndex].protien}}
+                                <br>
+                                Fats: {{foods[secondSelectedItemIndex].fats}}
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <h2>Dinner</h2>
+                        <button class="mealSelect" @click="thirdSelect = !thirdSelect" v-show="!thirdSelect">Select Meal</button>
+                        <button class="mealSelect" @click="showPage = 'B'" v-show="!thirdSelect">Edit</button>
+                        <ul v-show="thirdSelect" v-if="thirdShowAllItems">
+                            <li class="containerSelect" v-for="(food, index) in foods" :key="index">
+                                <strong>{{food.name}}</strong>
+                                <br>
+                                Calories: {{food.calories}}
+                                <br>
+                                Protein: {{food.protien}}
+                                <br>
+                                Fats: {{food.fats}}
+                                <br>
+                                <button class="mealSelect" @click="thirdSelectedItemIndex = index; thirdShowAllItems = !thirdShowAllItems; addCalories(); addProtien(); addFats()">Confirm</button>       
+                            </li>
+                        </ul>
+                        <div v-else-if="!thirdShowAllItems">
+                            <p>
+                                <br>
+                                <strong>{{foods[thirdSelectedItemIndex].name}}</strong>
+                                <br>
+                                <br>
+                                Calories: {{foods[thirdSelectedItemIndex].calories}}
+                                <br>
+                                Protein: {{foods[thirdSelectedItemIndex].protien}}
+                                <br>
+                                Fats: {{foods[thirdSelectedItemIndex].fats}}
+                                <br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            NEW PAGE MEALS
+             -->
+            <div id="wrapperMeals" v-else-if="showPage === 'B'">
+                <div id="mealsPage">
+                    <h1>Meals</h1>
+                    <ul>
+                        <li class="container" v-for="food in foods" :key="food._id">
+                            <h2><strong>{{food.name}}</strong></h2>
+                            <br>
+                            <h3>Calories: {{food.calories}}</h3>
+                            <br>
+                            <h3>Protien: {{food.protien}}</h3>
+                            <br>
+                            <h3>Fats: {{food.fats}}</h3>
+                            <button class="mealSelect"  v-if="sessionData.admin === 'YES'" @click="isshowEditModal = !isshowEditModal">Update</button>
+                            <button class="mealSelect" v-if="sessionData.admin === 'YES'" v-on:click="deleteFood(food._id)">Delete</button>
+                            <div class="form_border_two" v-if="isshowEditModal">
+                                <div class="form_padding">
+                                    <div class="form">
+                                        <input v-model="newFoodName" type="text" placeholder="Name">
+                                        <div >
+                                            {{errorMessageUpdateForField('newFoodName')}}                                        
+                                        </div>
+                                        <input v-model="newFoodCalories" type="number" placeholder="Calories">
+                                        <div >
+                                            {{errorMessageUpdateForField('newFoodCalories')}}
+                                        </div>
+                                        <input v-model="newFoodProtien" type="number" placeholder="Protein">
+                                        <div >
+                                            {{errorMessageUpdateForField('newFoodProtien')}}
+                                        </div>
+                                        <input v-model="newFoodFats" type="number" placeholder="Fats">
+                                        <div >
+                                            {{errorMessageUpdateForField('newFoodFats')}}
+                                        </div>
+                                        <button class="addMeal" @click="updateFood(food._id); updateMode()">Update Meal</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="form_border" v-if="sessionData.admin === 'YES'">
+                        <div class="form_padding">
+                            <h2>Fill out the form below:</h2>
+                            <div class="form">
+                                <input type="text" placeholder="Enter name of food" v-model="newFoodName">
+                                <div >
+                                    {{errorMessageForField('newFoodName')}}
+                                </div>
+                                <input type="text" placeholder="Enter calories amount here" v-model="newFoodCalories">
+                                <div >
+                                    {{errorMessageForField('newFoodCalories')}}
+                                </div>
+                                <input type="text" placeholder="Enter protein amount here" v-model="newFoodProtien">
+                                <div >
+                                    {{errorMessageForField('newFoodProtien')}}
+                                </div>
+                                <input type="text" placeholder="Enter fat amount here" v-model="newFoodFats">
+                                <div >
+                                    {{errorMessageForField('newFoodFats')}}
+                                </div>
+                                <button class="addMeal" v-on:click="addFoods">Add Meal</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            NEW PAGE GOALS
+             -->
+            <div id="wrapperGoals" v-else-if="showPage === 'C'">
+                <div id="goalsPage">
+                    <h1>Goals</h1>
+                    <ul>
+                        <li class="container" v-for="item in goals" :key="item._id">
+                            <h2><strong>{{item.goal}}</strong></h2>
+                            <br>
+                            <h3>Description: {{item.description}}</h3>
+                            <br>
+                            <button class="mealSelect" v-if="sessionData.admin === 'YES'" @click= "isShowEditGoal = !isShowEditGoal">Update</button>
+                            <button class="mealSelect" v-if="sessionData.admin === 'YES'" v-on:click="deleteGoal(item._id)">Delete</button>
+                            <div class="form_border_two" v-if="isShowEditGoal">
+                                <div class="form_padding">
+                                    <div class="form">
+                                        <input v-model="newGoal" type="text" placeholder="Name">
+                                        <div >
+                                            {{errorMessageUpdateGoalForField('newGoal')}}                                        
+                                        </div>
+                                        <textarea rows="4" cols="20" name= "myFeedback" placeholder="Enter goal description here" id="Feedback" v-model="newGoalDescription"></textarea>
+                                        <div >
+                                            {{errorMessageUpdateGoalForField('newGoalDescription')}}
+                                        </div>
+                                    
+                                        <button class="addMeal" @click="updateGoal(item._id); updateGoalMode()">Update Goal</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="form_border" v-if="sessionData.admin === 'YES'">
+                        <div class="form_padding">
+                            <h2>Fill out the form below:</h2>
+                            <div class="form">
+                                <input type="text" placeholder="Enter goal title here" v-model="newGoal">
+                                <div >
+                                    {{errorMessageGoalForField('newGoal')}}
+                                </div>
+                                <textarea rows="4" cols="20" name= "myFeedback" placeholder="Enter goal description here" id="Feedback" v-model="newGoalDescription"></textarea>
+                                <div >
+                                    {{errorMessageGoalForField('newGoalDescription')}}
+                                </div>
+                                <button class="addMeal" v-on:click="addGoals">Add Goal</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            NEW PAGE LOGIN
+             -->
+             <div id="wrapper_log_in" v-if="showPage === 'D'">
+                <div id="login_background">
+                    <h1>Login</h1>
+                </div>
+                <div id="login_form">
+                    <div class="loginOldForm">  
+                        <div class="containerLogin">
+                            <label><b>Email:</b></label>
+                            <input type="text" placeholder="Enter Email" v-model="newLoginEmail">
+                            <div class="userErrorMassages">
+                                {{errorMessageForSession('newLoginEmail')}}
+                            </div>
+                            <label><b>Password:</b></label>
+                            <input type="text" placeholder="Enter Password" v-model="newLoginPassword">
+                            <div class="userErrorMassages">
+                                {{errorMessageForSession('newLoginPassword')}}
+                            </div>
+                            <button id="log_in_button" v-on:click="addSession">Login</button><br>
+                            <p id="log_in_form_center">or</p>
+                            <div id="sign_up_log_in"><a @click="showPage = 'F'">Sign Up</a></div><br>
+                            <label>
+                                <input type="checkbox" checked="checked" name="remember"> Remember me
+                            </label>
+                            <p id="forgot_password"><a>Forgot password?</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            NEW PAGE SIGN UP
+             -->
+             <div id="wrapper_sign_in" v-if="showPage === 'F'">
+                <div id="sign_in_background">
+                    <h1>Create Account</h1>
+                </div>
+                <div id="sign_in_form">
+                    <div class="loginOldForm">  
+                        <div class="containerLogin">
+                            <label><b>First Name:</b></label>
+                            <input type="text" placeholder="Enter First Name" v-model="newFirstName">
+                            <div class="userErrorMassages">
+                                {{errorMessageForUser('newFirstName')}}
+                            </div>
+                            <label><b>Last Name:</b></label>
+                            <input type="text" placeholder="Enter Last Name" v-model="newLastName">
+                            <div class="userErrorMassages">
+                                {{errorMessageForUser('newLastName')}}
+                            </div>
+                            <label><b>Email:</b></label>
+                            <input type="text" placeholder="Enter Email" v-model="newEmail">
+                            <div class="userErrorMassages">
+                                {{errorMessageForUser('newEmail')}}
+                            </div>
+                            <label><b>Password:</b></label>
+                            <input type="text" placeholder="Enter Password that is greater than seven characters" v-model="newPlainTextPassword">
+                            <div class="userErrorMassages">
+                                {{errorMessageForUser('newPlainTextPassword')}}
+                            </div>
+                            <label><b>Subscription:</b></label>
+                            <input type="text" placeholder="Enter YES or NO if you want admin rights" v-model="newAdmin">
+                            <div class="userErrorMassages">
+                                {{errorMessageForUser('newAdmin')}}
+                            </div>
+                            <div id="sign_up_log_in"><a v-on:click="addUsers">Sign Up</a></div><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script src="app.js"></script>
+    </body>
+</html>
