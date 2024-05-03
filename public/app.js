@@ -1,10 +1,10 @@
 Vue.createApp({
     data: function (){
         return {
-            // showPage: 'D',
-            // logPage: 'B',
-            showPage: 'A',
-            logPage: 'A',
+            showPage: 'D',
+            logPage: 'B',
+            // showPage: 'A',
+            // logPage: 'A',
             ok: false,
             select: false,
             secondSelect: false,
@@ -44,7 +44,8 @@ Vue.createApp({
             chartData: null, // added for storing chart data
             errorUserMessages: [],
             sessionData: "",
-            jsonData: []
+            jsonData: [],
+            editIndex: null
                  
         };
     },
@@ -210,11 +211,9 @@ Vue.createApp({
             if (this.newAdmin == ""){
                 this.errorUserMessages.newAdmin = "Please enter YES or NO.";
             }
-            // else if ((this.newAdmin).localeCompare("YES") != 0){
-            //     this.errorUserMessages.newAdmin = "Please enter YES or NO.";
-            // }else if ((this.newAdmin).localeCompare("NO") != 0){
-            //     this.errorUserMessages.newAdmin = "Please enter YES or NO.";
-            // }
+            else if (this.newAdmin !== "YES" && this.newAdmin !== "NO"){
+                this.errorUserMessages.newAdmin = "Please enter YES or NO.";
+            }
 
             return this.userIsValid;
         },
@@ -258,7 +257,7 @@ Vue.createApp({
             var data= "loginEmail=" + encodeURIComponent(this.newLoginEmail);
             data += "&loginPassword=" + encodeURIComponent(this.newLoginPassword);
             //can make the url the render or by doing public and deleting all the way to /foods
-            fetch("/session", {
+            fetch("http://localhost:8080/session", {
                 body: data,
                 method: "POST",
                 credentials: "include",
@@ -280,16 +279,18 @@ Vue.createApp({
             });
         },
         loadSession: function (){
-            fetch("/session",{ 
+            fetch("http://localhost:8080/session",{ 
                 method: "GET",
-                credentials: "include"
+                // credentials: "include"
             }).then((response) => {
+                if (response.status != 401){
                 this.loadFoods();
                 this.loadGoals();
                 this.showPage = 'A';
                 this.logPage = 'A';
                 console.log("Session is authenticated");
                 return response.json(); // Parse JSON data from response
+            }
             }).then(data => {
                 // Handle the JSON data returned from the server
                 console.log('Session data:', data);
@@ -304,7 +305,7 @@ Vue.createApp({
               });
         },
         deleteSession: function(){
-            fetch("/session", {
+            fetch("http://localhost:8080/session", {
                 method: "DELETE",
                 credentials: "include"
 
@@ -326,7 +327,7 @@ Vue.createApp({
             data += "&protien=" + encodeURIComponent(this.newFoodProtien);
             data += "&fats=" + encodeURIComponent(this.newFoodFats);
             //can make the url the render or by doing public and deleting all the way to /foods
-            fetch("/foods", {
+            fetch("http://localhost:8080/foods", {
                 body: data,
                 method: "POST",
                 credentials: "include",
@@ -355,7 +356,7 @@ Vue.createApp({
             data += "&plainPassword=" + encodeURIComponent(this.newPlainTextPassword);
             data += "&adminRights=" + encodeURIComponent(this.newAdmin);
             //can make the url the render or by doing public and deleting all the way to /foods
-            fetch("/users", {
+            fetch("http://localhost:8080/users", {
                 body: data,
                 method: "POST",
                 credentials: "include",
@@ -391,7 +392,7 @@ Vue.createApp({
             var data= "goal=" + encodeURIComponent(this.newGoal);
             data += "&description=" + encodeURIComponent(this.newGoalDescription);
             //can make the url the render or by doing public and deleting all the way to /foods
-            fetch("/goals", {
+            fetch("http://localhost:8080/goals", {
                 body: data,
                 method: "POST",
                 credentials: "include",
@@ -408,7 +409,7 @@ Vue.createApp({
             });
         },
         loadFoods: function (){
-            fetch("/foods", {
+            fetch("http://localhost:8080/foods", {
                 method: "GET",
                 credentials: "include",
             }).then((response) => {
@@ -424,7 +425,7 @@ Vue.createApp({
             });
         },
         loadGoals: function (){
-            fetch("/goals", {
+            fetch("http://localhost:8080/goals", {
                 method: "GET",
                 credentials: "include",
             }).then((response) => {
@@ -437,7 +438,7 @@ Vue.createApp({
             });
         },
         deleteFood: function(foodID){
-            fetch("/foods/" + foodID, {
+            fetch("http://localhost:8080/foods/" + foodID, {
                 method: "DELETE",
                 credentials: "include"
             }).then((response) => {
@@ -448,7 +449,7 @@ Vue.createApp({
             });
         },
         deleteGoal: function(goalID){
-            fetch("/goals/" + goalID, {
+            fetch("http://localhost:8080/goals/" + goalID, {
                 method: "DELETE",
                 credentials: "include"
             }).then((response) => {
@@ -562,7 +563,7 @@ Vue.createApp({
     
             // Send a PUT request to update the food item
             try {
-                const response = await fetch('/foods/${foodId}', {
+                const response = await fetch('http://localhost:8080/foods/${foodId}', {
                     method: 'PUT',
                     credentials: "include",
                     headers: {
@@ -597,7 +598,7 @@ Vue.createApp({
     
             // Send a PUT request to update the food item
             try {
-                const response = await fetch('/goals/${goalId}', {
+                const response = await fetch('http://localhost:8080/goals/${goalId}', {
                     method: 'PUT',
                     credentials: "include",
                     headers: {

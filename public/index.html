@@ -159,7 +159,7 @@
                 <div id="mealsPage">
                     <h1>Meals</h1>
                     <ul>
-                        <li class="container" v-for="food in foods" :key="food._id">
+                        <li class="container" v-for="(food, index) in foods" :key="food._id">
                             <h2><strong>{{food.name}}</strong></h2>
                             <br>
                             <h3>Calories: {{food.calories}}</h3>
@@ -167,9 +167,9 @@
                             <h3>Protien: {{food.protien}}</h3>
                             <br>
                             <h3>Fats: {{food.fats}}</h3>
-                            <button class="mealSelect"  v-if="sessionData.admin === 'YES'" @click="isshowEditModal = !isshowEditModal">Update</button>
+                            <button class="mealSelect"  v-if="sessionData.admin === 'YES'" @click="editIndex = index">Update</button>
                             <button class="mealSelect" v-if="sessionData.admin === 'YES'" v-on:click="deleteFood(food._id)">Delete</button>
-                            <div class="form_border_two" v-if="isshowEditModal">
+                            <div class="form_border_two" v-if="editIndex === index">
                                 <div class="form_padding">
                                     <div class="form">
                                         <input v-model="newFoodName" type="text" placeholder="Name">
@@ -188,7 +188,7 @@
                                         <div >
                                             {{errorMessageUpdateForField('newFoodFats')}}
                                         </div>
-                                        <button class="addMeal" @click="updateFood(food._id); updateMode()">Update Meal</button>
+                                        <button class="addMeal" @click="updateFood(food._id); updateMode(); editIndex = null">Update Meal</button>
                                     </div>
                                 </div>
                             </div>
@@ -227,14 +227,14 @@
                 <div id="goalsPage">
                     <h1>Goals</h1>
                     <ul>
-                        <li class="container" v-for="item in goals" :key="item._id">
+                        <li class="container" v-for="(item, index) in goals" :key="item._id">
                             <h2><strong>{{item.goal}}</strong></h2>
                             <br>
                             <h3>Description: {{item.description}}</h3>
                             <br>
-                            <button class="mealSelect" v-if="sessionData.admin === 'YES'" @click= "isShowEditGoal = !isShowEditGoal">Update</button>
+                            <button class="mealSelect" v-if="sessionData.admin === 'YES'" @click= "editIndexMeal = index">Update</button>
                             <button class="mealSelect" v-if="sessionData.admin === 'YES'" v-on:click="deleteGoal(item._id)">Delete</button>
-                            <div class="form_border_two" v-if="isShowEditGoal">
+                            <div class="form_border_two" v-if="editIndexMeal === index">
                                 <div class="form_padding">
                                     <div class="form">
                                         <input v-model="newGoal" type="text" placeholder="Name">
@@ -245,8 +245,7 @@
                                         <div >
                                             {{errorMessageUpdateGoalForField('newGoalDescription')}}
                                         </div>
-                                    
-                                        <button class="addMeal" @click="updateGoal(item._id); updateGoalMode()">Update Goal</button>
+                                        <button class="addMeal" @click="updateGoal(item._id); updateGoalMode(); editIndexMeal = null">Update Goal</button>
                                     </div>
                                 </div>
                             </div>
