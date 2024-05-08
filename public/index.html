@@ -12,7 +12,9 @@
         <div id= "app">
             <!--this is Vue app-->
             <div id="wrapper">
-                <h1 id="nutritionNow">Nutrition <span id="now">Now</span></h1>
+                <div id="nutritionNow"><h1>Nutrition</h1>
+                    <div><h1>Now</h1></div>
+                </div>
                 <hr id="nutritionHR">
                 <h1 class="welcome" v-if="showPage == 'A'">Welcome </h1>
                 <h1 class="welcome" v-else-if="showPage =='B'">Add or Change your Meals</h1>
