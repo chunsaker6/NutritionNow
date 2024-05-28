@@ -45,7 +45,14 @@ Vue.createApp({
             errorUserMessages: [],
             sessionData: "",
             jsonData: [],
-            editIndex: null
+            editIndex: null,
+            editIndexMeal: null,
+            newFoodNameUpdate: '',
+            newFoodCaloriesUpdate: '',
+            newFoodProtienUpdate: '',
+            newFoodFatsUpdate: '',
+            newGoalUpdate: '',
+            newGoalDescriptionUpdate: ''
                  
         };
     },
@@ -64,11 +71,11 @@ Vue.createApp({
         validateUpdateGoal: function(){
             this.errorGoalUpdateMessages = {};
 
-            if (this.newGoal == ""){
-                this.errorGoalUpdateMessages.newGoal = "Please enter a goal title.";
+            if (this.newGoalUpdate == ""){
+                this.errorGoalUpdateMessages.newGoalUpdate = "Please enter a goal title.";
             }
-            if (this.newGoalDescription == ""){
-                this.errorGoalUpdateMessages.newGoalDescription = "Please enter a description of your goal.";   
+            if (this.newGoalDescriptionUpdate == ""){
+                this.errorGoalUpdateMessages.newGoalDescriptionUpdate = "Please enter a description of your goal.";   
             }
             return this.goalIsUpdateValid;
         },
@@ -92,44 +99,44 @@ Vue.createApp({
         validateUpdateFood: function(){
             this.errorUpdateMessages = {};
 
-            if (this.newFoodName == ""){
-                this.errorUpdateMessages.newFoodName = "Please enter a food name.";
+            if (this.newFoodNameUpdate == ""){
+                this.errorUpdateMessages.newFoodNameUpdate = "Please enter a food name.";
             }
-            if (this.newFoodCalories == ""){
-                this.errorUpdateMessages.newFoodCalories = "Please enter a calorie amount.";   
+            if (this.newFoodCaloriesUpdate == ""){
+                this.errorUpdateMessages.newFoodCaloriesUpdate = "Please enter a calorie amount.";   
             }
-            if (isNaN(this.newFoodCalories)){
-                this.errorUpdateMessages.newFoodCalories = "Enter integers for calorie amount.";   
+            if (isNaN(this.newFoodCaloriesUpdate)){
+                this.errorUpdateMessages.newFoodCaloriesUpdate = "Enter integers for calorie amount.";   
             }
-            if (this.newFoodCalories > 1000){
-                this.errorUpdateMessages.newFoodCalories = "Invalid calorie amount.";   
+            if (this.newFoodCaloriesUpdate > 1000){
+                this.errorUpdateMessages.newFoodCaloriesUpdate = "Invalid calorie amount.";   
             }
-            if (this.newFoodCalories < 0){
-                this.errorUpdateMessages.newFoodCalories = "Can't do a negative calorie amount.";   
+            if (this.newFoodCaloriesUpdate < 0){
+                this.errorUpdateMessages.newFoodCaloriesUpdate = "Can't do a negative calorie amount.";   
             }
-            if (this.newFoodProtien == ""){
-                this.errorUpdateMessages.newFoodProtien = "Please enter a food protien."; 
+            if (this.newFoodProtienUpdate == ""){
+                this.errorUpdateMessages.newFoodProtienUpdate = "Please enter a food protien."; 
             }
-            if (isNaN(this.newFoodProtien)){
-                this.errorUpdateMessages.newFoodProtien = "Enter integers for protien amount.";   
+            if (isNaN(this.newFoodProtienUpdate)){
+                this.errorUpdateMessages.newFoodProtienUpdate = "Enter integers for protien amount.";   
             }
-            if (this.newFoodProtien > 100){
-                this.errorUpdateMessages.newFoodProtien = "Invalid protien amount.";   
+            if (this.newFoodProtienUpdate > 100){
+                this.errorUpdateMessages.newFoodProtienUpdate = "Invalid protien amount.";   
             }
-            if (this.newFoodProtien < 0){
-                this.errorUpdateMessages.newFoodProtien = "Can't do negative numbers for protein.";   
+            if (this.newFoodProtienUpdate < 0){
+                this.errorUpdateMessages.newFoodProtienUpdate = "Can't do negative numbers for protein.";   
             }
-            if (this.newFoodFats == ""){
-                this.errorUpdateMessages.newFoodFats = "Please enter a food fats.";
+            if (this.newFoodFatsUpdate == ""){
+                this.errorUpdateMessages.newFoodFatsUpdate = "Please enter a food fats.";
             }
-            if (isNaN(this.newFoodFats)){
-                this.errorUpdateMessages.newFoodFats = "Enter integers for fat amount.";   
+            if (isNaN(this.newFoodFatsUpdate)){
+                this.errorUpdateMessages.newFoodFatsUpdate = "Enter integers for fat amount.";   
             }
-            if (this.newFoodFats > 100){
-                this.errorUpdateMessages.newFoodFats = "Invalid fat amount.";   
+            if (this.newFoodFatsUpdate > 100){
+                this.errorUpdateMessages.newFoodFatsUpdate = "Invalid fat amount.";   
             }
-            if (this.newFoodFats < 0){
-                this.errorUpdateMessages.newFoodFats = "Can't do negative numbers for fats.";   
+            if (this.newFoodFatsUpdate < 0){
+                this.errorUpdateMessages.newFoodFatsUpdate = "Can't do negative numbers for fats.";   
             }
             return this.foodIsUpdateValid;
         },
@@ -417,9 +424,11 @@ Vue.createApp({
                     response.json().then((foodsFromServer) => {
                         //console.log("recieved foods from API:", foodsFromServer);
                         this.foods = foodsFromServer;
-                        this.renderChart(); // Call renderChart after loading foods
-                        this.renderProtienChart();
-                        this.renderFatsChart();
+                        if (this.showPage != 'B'){
+                            this.renderChart(); // Call renderChart after loading foods
+                            this.renderProtienChart();
+                            this.renderFatsChart();
+                        }
                     });
                 }
             });
@@ -460,8 +469,6 @@ Vue.createApp({
             });
         },
         renderChart: function() {
-            // const xValues = this.foods.map(food => food.name); // Assuming food name is used for x-axis
-            // const yValues = this.foods.map(food => food.calories); // Assuming calories for y-axis
             const xValues = ["Total Calories: "+this.calsCount]; // Assuming food name is used for x-axis
             const yValues = [this.calsCount]; // Assuming calories for y-axis
             const barColors = ["red"]; // Example colors, you can modify as needed
@@ -484,14 +491,9 @@ Vue.createApp({
             });
             this.chartData.options.scales.yAxes[0].ticks.min = 0; // Set minimum value for y-axis
             this.chartData.options.scales.yAxes[0].ticks.max = 1500; // Set maximum value for y-axis
-            // You can adjust min and max values according to your data
-            // If you want dynamic values, you can calculate them based on your data
-            // For example, using Math.min() and Math.max()
             this.chartData.update();
         },
         renderProtienChart: function() {
-            // const xValues = this.foods.map(food => food.name); // Assuming food name is used for x-axis
-            // const yValues = this.foods.map(food => food.calories); // Assuming calories for y-axis
             const xValues = ["Total Protein: " + this.protienCount]; // Assuming food name is used for x-axis
             const yValues = [this.protienCount]; // Assuming calories for y-axis
             const barColors = ["red"]; // Example colors, you can modify as needed
@@ -514,14 +516,9 @@ Vue.createApp({
             });
             this.chartData.options.scales.yAxes[0].ticks.min = 0; // Set minimum value for y-axis
             this.chartData.options.scales.yAxes[0].ticks.max = 100; // Set maximum value for y-axis
-            // You can adjust min and max values according to your data
-            // If you want dynamic values, you can calculate them based on your data
-            // For example, using Math.min() and Math.max()
             this.chartData.update();
         },
         renderFatsChart: function() {
-            // const xValues = this.foods.map(food => food.name); // Assuming food name is used for x-axis
-            // const yValues = this.foods.map(food => food.calories); // Assuming calories for y-axis
             const xValues = ["Total Fats: "+this.fatsCount]; // Assuming food name is used for x-axis
             const yValues = [this.fatsCount]; // Assuming calories for y-axis
             const barColors = ["red"]; // Example colors, you can modify as needed
@@ -544,9 +541,6 @@ Vue.createApp({
             });
             this.chartData.options.scales.yAxes[0].ticks.min = 0; // Set minimum value for y-axis
             this.chartData.options.scales.yAxes[0].ticks.max = 50; // Set maximum value for y-axis
-            // You can adjust min and max values according to your data
-            // If you want dynamic values, you can calculate them based on your data
-            // For example, using Math.min() and Math.max()
             this.chartData.update();
         },
         async updateFood(foodId) {
@@ -556,14 +550,14 @@ Vue.createApp({
             
             // Prepare the data to be sent in the request body
             const data = new URLSearchParams();
-            data.append('name', this.newFoodName);
-            data.append('calories', this.newFoodCalories);
-            data.append('protien', this.newFoodProtien);
-            data.append('fats', this.newFoodFats);
+            data.append('name', this.newFoodNameUpdate);
+            data.append('calories', this.newFoodCaloriesUpdate);
+            data.append('protien', this.newFoodProtienUpdate);
+            data.append('fats', this.newFoodFatsUpdate);
     
             // Send a PUT request to update the food item
             try {
-                const response = await fetch('http://localhost:8080/foods/${foodId}', {
+                const response = await fetch('http://localhost:8080/foods/' + foodId, {
                     method: 'PUT',
                     credentials: "include",
                     headers: {
@@ -574,10 +568,10 @@ Vue.createApp({
     
                 if (response.status === 200) {
                     // Clear input fields
-                    this.newFoodName = "";
-                    this.newFoodCalories = "";
-                    this.newFoodProtien = "";
-                    this.newFoodFats = "";
+                    this.newFoodNameUpdate = "";
+                    this.newFoodCaloriesUpdate = "";
+                    this.newFoodProtienUpdate = "";
+                    this.newFoodFatsUpdate = "";
     
                     // Reload foods
                     this.loadFoods();
@@ -593,12 +587,12 @@ Vue.createApp({
             
             // Prepare the data to be sent in the request body
             const data = new URLSearchParams();
-            data.append('goal', this.newGoal);
-            data.append('description', this.newGoalDescription);
+            data.append('goal', this.newGoalUpdate);
+            data.append('description', this.newGoalDescriptionUpdate);
     
             // Send a PUT request to update the food item
             try {
-                const response = await fetch('http://localhost:8080/goals/${goalId}', {
+                const response = await fetch('http://localhost:8080/goals/' + goalId, {
                     method: 'PUT',
                     credentials: "include",
                     headers: {
@@ -609,8 +603,8 @@ Vue.createApp({
     
                 if (response.status === 200) {
                     // Clear input fields
-                    this.newGoal = "";
-                    this.newGoalDescription = "";
+                    this.newGoalUpdate = "";
+                    this.newGoalDescriptionUpdate = "";
     
                     // Reload foods
                     this.loadGoals();
@@ -647,8 +641,6 @@ Vue.createApp({
     created: function(){
         console.log("Hello Vue");
         this.loadSession();
-        // this.loadFoods();
-        // this.loadGoals();
     }
 
 

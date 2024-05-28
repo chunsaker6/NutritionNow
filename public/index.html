@@ -174,21 +174,21 @@
                             <div class="form_border_two" v-if="editIndex === index">
                                 <div class="form_padding">
                                     <div class="form">
-                                        <input v-model="newFoodName" type="text" placeholder="Name">
+                                        <input v-model="newFoodNameUpdate" type="text" placeholder="Name">
                                         <div >
-                                            {{errorMessageUpdateForField('newFoodName')}}                                        
+                                            {{errorMessageUpdateForField('newFoodNameUpdate')}}                                        
                                         </div>
-                                        <input v-model="newFoodCalories" type="number" placeholder="Calories">
+                                        <input v-model="newFoodCaloriesUpdate" type="number" placeholder="Calories">
                                         <div >
-                                            {{errorMessageUpdateForField('newFoodCalories')}}
+                                            {{errorMessageUpdateForField('newFoodCaloriesUpdate')}}
                                         </div>
-                                        <input v-model="newFoodProtien" type="number" placeholder="Protein">
+                                        <input v-model="newFoodProtienUpdate" type="number" placeholder="Protein">
                                         <div >
-                                            {{errorMessageUpdateForField('newFoodProtien')}}
+                                            {{errorMessageUpdateForField('newFoodProtienUpdate')}}
                                         </div>
-                                        <input v-model="newFoodFats" type="number" placeholder="Fats">
+                                        <input v-model="newFoodFatsUpdate" type="number" placeholder="Fats">
                                         <div >
-                                            {{errorMessageUpdateForField('newFoodFats')}}
+                                            {{errorMessageUpdateForField('newFoodFatsUpdate')}}
                                         </div>
                                         <button class="addMeal" @click="updateFood(food._id); updateMode(); editIndex = null">Update Meal</button>
                                     </div>
@@ -239,13 +239,13 @@
                             <div class="form_border_two" v-if="editIndexMeal === index">
                                 <div class="form_padding">
                                     <div class="form">
-                                        <input v-model="newGoal" type="text" placeholder="Name">
+                                        <input v-model="newGoalUpdate" type="text" placeholder="Name">
                                         <div >
-                                            {{errorMessageUpdateGoalForField('newGoal')}}                                        
+                                            {{errorMessageUpdateGoalForField('newGoalUpdate')}}                                        
                                         </div>
-                                        <textarea rows="4" cols="20" name= "myFeedback" placeholder="Enter goal description here" id="Feedback" v-model="newGoalDescription"></textarea>
+                                        <textarea rows="4" cols="20" placeholder="Enter goal description here" v-model="newGoalDescriptionUpdate"></textarea>
                                         <div >
-                                            {{errorMessageUpdateGoalForField('newGoalDescription')}}
+                                            {{errorMessageUpdateGoalForField('newGoalDescriptionUpdate')}}
                                         </div>
                                         <button class="addMeal" @click="updateGoal(item._id); updateGoalMode(); editIndexMeal = null">Update Goal</button>
                                     </div>
