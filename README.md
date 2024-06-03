@@ -1,5 +1,4 @@
-# NutritionNow
-# Nutrition Tracking Web App
+# Nutrition Tracking Web App : NutritionNow
 
 This is a nutrition tracking web application built using Vue.js for the front end, Node.js for the back end, and MongoDB for data storage. It allows users to track their daily intake of protein, fats, and calories. It also allows the user to input meals and save them for later use.
 
