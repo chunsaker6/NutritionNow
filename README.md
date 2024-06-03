@@ -33,4 +33,8 @@ This is a nutrition tracking web application built using Vue.js for the front en
    git clone https://github.com/chunsaker6/NutritionNow.git
    npm install node, vue, mongoose, bycrypt
    To Run it: node server.js
+A premade user is email: 123@gmail.com <br>
+Password: 123gmail<br>
+For admin rights email: 1234@gmail.com<br>
+Password: 1234gmail <br>
 Open your web browser and navigate to http://localhost:8080 to access the application.
