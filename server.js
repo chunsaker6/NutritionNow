@@ -16,16 +16,6 @@ app.use(session({
     secret: "6r6t8puie55689uihugfrw4jbuyyghj76655tt32wserted",
     saveUninitialized: true,
     resave: false,
-    // store: MongoStore.create({ 
-    //     mongoUrl: 'mongodb+srv://chunsaker-SE4200:tE5gDZ6YlZKZcnHg@cluster0.6txnlrl.mongodb.net/garage?retryWrites=true&w=majority'}),
-    // store: new MemoryStore({
-    //     checkPeriod: 86400000 // prune expired entries every 24h
-    //   }),
-    // cookie: {
-    //     // secure true breaks postman and safari
-    //     // secure: true, 
-    //     sameSite: 'None'
-    // }
 }));
 // app.use(express.json());
 app.use(express.static("public"));
@@ -235,6 +225,8 @@ app.post("/users", function(request, response){
     newUser.setEncryptedPassword(request.body.plainPassword).then(function(){
         // at this time the password has been encrypted and set on the user
         newUser.save().then(() => {
+            request.session.userId = newUser._id
+            console.log("new user id", request.session.userId)
             response.status(201).send("Created")
     
         }).catch((error) => {
@@ -269,17 +261,8 @@ app.delete("/session", function(request, response){
 
 //retrieve session
 app.get("/session",  authorizeRequest(false), (request, response) =>{
-    // console.log("session:", request.session)
-    // console.log("session user id", request.session.userId)
-    // if (request.session && request.session.userId){
-    //     // logged in
-    //     response.status(201).send("Autheticated")
-    // }else{
-    //     response.status(401).send("Not Autheticated")
-    // }
     console.log("user get session info", request.user)
-    response.json(request.user)
-    // response.status(201).send("Autheticated")
+    response.status(201).json(request.user);
 })
 // authentification: create session
 app.post("/session", function(request, response){

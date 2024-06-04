@@ -372,12 +372,12 @@ Vue.createApp({
                 }
             }).then((response) => {
                 if (response.status == 201){
+                    this.loadSession();
                     this.newFirstName= "";
                     this.newLastName= "";
                     this.newEmail= "";
                     this.newPlainTextPassword= "";
                     this.newAdmin= "";
-                    this.loadFoods();
                     this.showPage = 'A';
                     this.logPage = 'A';
                 }else if( response.status == 422){
